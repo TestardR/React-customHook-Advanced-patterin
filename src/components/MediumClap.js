@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styles from './medium-clap.css';
-import useClapAnimation from '../hook/useClapAnimation'
+import useClapAnimation from '../hook/useClapAnimation';
 
 const initialState = {
   count: 0,
@@ -12,7 +12,21 @@ const MediumClap = () => {
   const MAXIMUM_USER_CLAP = 50;
   const [clapState, setClapState] = useState(initialState);
   const { isClicked, count, countTotal } = clapState;
-  const animationTimeline = useClapAnimation();
+
+  const [{ clapRef, clapCountRef, countTotalRef }, setRefState] = useState({});
+
+  const setRef = useCallback(node => {
+    setRefState(prevRefState => ({
+      ...prevRefState,
+      [node.dataset.refkey]: node
+    }));
+  }, []);
+
+  const animationTimeline = useClapAnimation({
+    clapEl: clapRef,
+    countEl: clapCountRef,
+    countTotalEl: countTotalRef
+  });
 
   const handleClapClik = () => {
     animationTimeline.replay();
@@ -27,10 +41,15 @@ const MediumClap = () => {
   };
 
   return (
-    <button id="clap" className={styles.clap} onClick={handleClapClik}>
+    <button
+      ref={setRef}
+      data-refkey="clapRef"
+      className={styles.clap}
+      onClick={handleClapClik}
+    >
       <ClapIcon isClicked={isClicked} />
-      <ClapCount count={count} />
-      <CountTotal countTotal={countTotal} />
+      <ClapCount count={count} setRef={setRef} />
+      <CountTotal countTotal={countTotal} setRef={setRef} />
     </button>
   );
 };
@@ -54,21 +73,20 @@ const ClapIcon = ({ isClicked }) => {
   );
 };
 
-const ClapCount = ({ count }) => {
+const ClapCount = ({ count, setRef }) => {
   return (
-    <span id="clapCount" className={styles.count}>
+    <span ref={setRef} data-refkey="clapCountRef" className={styles.count}>
       + {count}
     </span>
   );
 };
 
-const CountTotal = ({ countTotal }) => {
+const CountTotal = ({ countTotal, setRef }) => {
   return (
-    <span id="clapCountTotal" className={styles.total}>
+    <span ref={setRef} data-refkey="countTotalRef" className={styles.total}>
       {countTotal}
     </span>
   );
 };
-
 
 export default MediumClap;

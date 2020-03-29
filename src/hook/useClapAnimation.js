@@ -1,22 +1,25 @@
 import { useState, useLayoutEffect } from 'react';
 import mojs from 'mo-js';
 
-const useClapAnimation = () => {
+const useClapAnimation = ({  clapEl, countEl, countTotalEl }) => {
   const [animationTimeline, setAnimationTimeline] = useState(
     () => new mojs.Timeline()
   );
 
   useLayoutEffect(() => {
+    if (!clapEl || !countEl || !countTotalEl) {
+        return;
+      }
     const tlDuration = 300;
     const scaleButton = new mojs.Html({
-      el: '#clap',
+      el: clapEl,
       duration: tlDuration,
       scale: { 1.3: 1 },
       easing: mojs.easing.ease.out
     });
 
     const countAnimation = new mojs.Html({
-      el: '#clapCount',
+      el: countEl,
       opacity: { 0: 1 },
       duration: tlDuration,
       y: { 0: -30 }
@@ -27,18 +30,18 @@ const useClapAnimation = () => {
     });
 
     const countTotalAnimation = new mojs.Html({
-      el: '#clapCountTotal',
+      el: countTotalEl,
       opacity: { 0: 1 },
       delay: (3 * tlDuration) / 2,
       duration: tlDuration,
       y: { 0: -3 }
     });
 
-    const clap = document.getElementById('clap');
-    clap.style.transform = 'scale(1, 1)';
+   
+    clapEl.style.transform = 'scale(1,1)';
 
     const triangleBurst = new mojs.Burst({
-      parent: '#clap',
+      parent: clapEl,
       radius: { 50: 95 },
       count: 5,
       angle: 30,
@@ -56,7 +59,7 @@ const useClapAnimation = () => {
     });
 
     const circleBurst = new mojs.Burst({
-      parent: '#clap',
+      parent: clapEl,
       radius: { 50: 75 },
       angle: 25,
       duration: tlDuration,
@@ -79,7 +82,7 @@ const useClapAnimation = () => {
     ]);
 
     setAnimationTimeline(newAnimationTimeline);
-  }, [animationTimeline]);
+  }, [clapEl, animationTimeline]);
 
   return animationTimeline;
 };
