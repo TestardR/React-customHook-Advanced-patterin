@@ -1,15 +1,15 @@
 import { useState, useLayoutEffect } from 'react';
 import mojs from 'mo-js';
 
-const useClapAnimation = ({  clapEl, countEl, countTotalEl }) => {
+const useClapAnimation = ({ clapEl, countEl, countTotalEl }) => {
   const [animationTimeline, setAnimationTimeline] = useState(
     () => new mojs.Timeline()
   );
 
   useLayoutEffect(() => {
     if (!clapEl || !countEl || !countTotalEl) {
-        return;
-      }
+      return;
+    }
     const tlDuration = 300;
     const scaleButton = new mojs.Html({
       el: clapEl,
@@ -37,7 +37,6 @@ const useClapAnimation = ({  clapEl, countEl, countTotalEl }) => {
       y: { 0: -3 }
     });
 
-   
     clapEl.style.transform = 'scale(1,1)';
 
     const triangleBurst = new mojs.Burst({
@@ -82,7 +81,7 @@ const useClapAnimation = ({  clapEl, countEl, countTotalEl }) => {
     ]);
 
     setAnimationTimeline(newAnimationTimeline);
-  }, [clapEl, animationTimeline]);
+  }, [clapEl, countEl, countTotalEl, animationTimeline]);
 
   return animationTimeline;
 };
